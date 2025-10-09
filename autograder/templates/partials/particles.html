@@ -1,0 +1,9 @@
+{% load static %}
+
+<div id="particles-js" class="particles-js"></div>
+<script type="text/javascript" src="{% static 'js/particles.js' %}"></script>
+<script>
+    particlesJS.load("particles-js", "{% static 'js/particles.json' %}", function () {
+        console.log("callback - particles.js config loaded");
+    });
+</script>

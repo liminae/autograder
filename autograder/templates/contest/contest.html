@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load charat %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+{% endblock stylesheet %}
+
+{% block title %}Contest{% endblock title %}
+
+{% block content %}
+{% include "partials/header.html" %}
+{% if user.particles_enabled %}{% include "partials/particles.html" %}{% endif %}
+{% include "partials/contestNavbar.html" %}
+
+
+{% if messages %}
+{% for message in messages  %}
+<div class="main-block small-padding">
+    <div class="info">
+        {{message}}
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+<div class="main-block">
+    {% if not_empty == "yes" %}
+    <table>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Points</th>
+        <th>Solved</th>
+    </tr>
+    {% for problem in problems %}
+    <tr>
+        <td class="centertext">{{problem.letter}}</td>
+        <td class="centertext">
+            <a href="{% url "problems:problem" pid=problem.id %}">
+            {{ problem.name }}
+            </a>
+        </td>
+        <td class="centertext">{{ problem.points }}</td>
+        <td class="centertext">{{ problem.solves }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <div class="info">
+        No problems yet!
+    </div>
+    {% endif %}
+</div>
+<div class="main-block small-padding">
+    <div class="info">
+        <p id="countdown">Contest Has Ended</p>
+    </div>
+</div>
+{% if editorial is not None %}
+<div class="main-block small-padding">
+    <div class="info">
+    <a href="{{ editorial }}" target="_blank">Editorial</a>
+    </div>
+</div>
+{% endif %}
+<div class="option-buttons">
+    <a href="{% url "runtests:submitcontest" cid=cid %}">
+    <div class="button">Submit</div>
+    </a>
+    <a href="{% url "contests:contests" %}">
+    <div class="button">Back</div>
+    </a>
+</div>
+<script>
+    const contestTimestamp = {{ timeStatus|date:"U" }};
+    let myVar = setInterval(myTimer, 1000);
+
+    function myTimer() {
+        let targetTime = new Date(contestTimestamp * 1000);
+        let now = new Date();
+        let diff = targetTime - now;
+
+        if (diff > 0) {
+            let days = Math.floor(diff / (24 * 60 * 60 * 1000));
+            let hours = Math.floor(diff / (60 * 60 * 1000)) % 24;
+            let minutes = Math.floor(diff / (60 * 1000)) % 60;
+            let seconds = Math.floor(diff / 1000) % 60;
+
+            document.getElementById("countdown").innerHTML =
+                days + " Days, " + hours + " Hours, " + minutes + " Minutes, " + seconds +
+                " Seconds until contest {{ timeType }}";
+        }
+    }
+</script>
+{% endblock content %}

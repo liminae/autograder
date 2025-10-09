@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+{% endblock stylesheet %}
+
+{% block title %}Viewing Submission{% endblock title %}
+
+{% block head %}
+<script>
+function auto_grow() {
+    element = document.getElementById("usercode");
+    element.style.height = "5px";
+    element.style.height = element.scrollHeight + "px";
+    element = document.getElementById("feedback");
+    element.style.height = "5px";
+    element.style.height = element.scrollHeight + "px";
+}
+</script>
+{% endblock head %}
+
+{% block bodyattr %}
+onload="auto_grow()"
+{% endblock bodyattr %}
+
+
+
+{% block content %}
+{% if user.particles_enabled %}{% include "partials/particles.html" %}{% endif %}
+{% include "partials/header.html" %}
+
+<div class="main-block">
+    {% if submission %}
+
+    <div class="title">
+        Problem: {{submission.name}}, Language:
+        {{submission.language}}, Runtime:
+        {{submission.runtime}}ms, Verdict:
+        {{submission.verdict}}, Time: {{submission.timestamp}}
+        {% if admin %} - Viewing as Admin {% endif %}
+    </div>
+    <br/>
+    <textarea id="usercode" style="width: 100%; font-size: 1.5em" rows="4", cols="50" readonly>{{submission.code}}</textarea>
+    <br/>
+    <textarea id="feedback" style="width: 100%; font-size: 1.5em" rows="4", cols="50" readonly>{{insight}}</textarea>
+    {% else %}
+    <div class="title">
+        {{insight}}
+    </div>
+    {% endif %}
+</div>
+<div class="option-buttons">
+    {% if submission %}
+    <a href="{% url "problems:problem" submission.problem.id %}">
+        <div class="button">Problem</div>
+    </a>
+    {% endif %}
+    <a href="{% url "runtests:status" page=1 %}">
+        <div class="button">Back</div>
+    </a>
+
+
+</div>
+
+{% endblock content %}

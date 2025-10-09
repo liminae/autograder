@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+{% endblock stylesheet %}
+
+{% block title %}Rankings{% endblock title %}
+
+{% block head %}
+<script src="{% static 'js/tablesort.js' %}"></script>
+<script src="{% static "js/tablesort.number.js" %}"></script>
+{% endblock head %}
+
+{% block content %}
+{% include "partials/header.html" %}
+{% if user.particles_enabled %}{% include "partials/particles.html" %}{% endif %}
+
+<div class="main-block">
+    <div class="title">Rankings</div>
+    <div class="subtitle">
+        <br>
+        <a href="https://docs.google.com/document/d/14CBtom9g0AKZkmncUQQJwV-dIwG54Arr26FnWfUcdvI/edit?usp=sharing" target="_blank">Learn about how rankings are formulated</a>
+    </div>
+</div>
+    <div class="main-block">
+    <table id="rankings">
+        <tr data-sort-method="none">
+            <th>#</th>
+            <th>Name</th>
+            <th>USACO</th>
+            <th>Codeforces</th>
+            <th>In-Houses</th>
+            <th>Index</th>
+        </tr>
+        {% for ranking in rankings %}
+            <tr class="{% if ranking.id == id %}row-highlight{% endif %}">
+            <td class="centertext">{{ ranking.rank }}</td>
+            <td class="centertext"><a href="{% url "index:user_profile" ranking.id %}">{{ ranking.name }}</a></td>
+            <td class="centertext">{{ ranking.usaco }}</td>
+            <td class="centertext">{{ ranking.cf }}</td>
+            <td class="centertext">{{ ranking.inhouse|floatformat:3 }}</td>
+            <td class="centertext">{{ ranking.index|floatformat:3 }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        new Tablesort(document.getElementById('rankings'));
+    }, false);
+</script>
+{% endblock content %}

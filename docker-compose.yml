@@ -1,0 +1,93 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: autograder
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - main_network
+  redis:
+        container_name: redis
+        image: redis:latest
+        expose:
+            - "6379"
+        networks:
+            - main_network
+  autograder:
+      container_name: autograder
+      image: autograder
+      build:
+        context: .
+        dockerfile: config/Dockerfile
+      entrypoint:
+        [
+          "/bin/bash",
+          "-c",
+          "cd config && \
+          /bin/bash entrypoint.sh"
+        ]
+      ports:
+          - "3000:3000"
+      networks:
+          - main_network
+      volumes:
+          - ./:/home/tjctgrader/autograder
+          - /home/tjctgrader/autograder/.ruff_cache
+          - /home/tjctgrader/autograder/nsjail
+          - problems_data:/home/tjctgrader/problems
+      depends_on:
+        - postgres
+  celery:
+        container_name: celery
+        image: autograder
+        networks:
+            - main_network
+        entrypoint:
+            [
+                "/bin/sh",
+                "-c",
+                "uv run celery --app autograder worker -l INFO -Ofair"
+            ]
+        depends_on:
+            - autograder
+            - redis
+        volumes:
+          - ./:/home/tjctgrader/autograder
+          - /home/tjctgrader/autograder/.ruff_cache
+          - problems_data:/home/tjctgrader/problems
+  celery_coderunner:
+        container_name: celery_coderunner
+        image: autograder
+        networks:
+            - main_network
+        entrypoint:
+            [
+                "/bin/sh",
+                "-c",
+                "uv run celery --app autograder worker -l INFO -Q coderunner_queue -c 2"
+            ]
+        depends_on:
+            - autograder
+            - redis
+        volumes:
+          - ./:/home/tjctgrader/autograder
+          - /home/tjctgrader/autograder/.ruff_cache
+          - problems_data:/home/tjctgrader/problems
+        privileged: true
+
+
+volumes:
+  pgdata:
+    name: autograder-pgdata
+  problems_data:
+
+networks:
+  main_network:
+    driver: bridge

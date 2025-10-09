@@ -1,0 +1,31 @@
+[project]
+name = "autograder"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "bs4>=0.0.2",
+    "celery>=5.5.3",
+    "channels>=4.3.1",
+    "channels-redis>=4.3.0",
+    "daphne>=4.2.1",
+    "datetime>=5.5",
+    "django>=5.1.7",
+    "django-user-agents>=0.4.0",
+    "logging>=0.4.9.6",
+    "psycopg>=3.2.9",
+    "python-decouple>=3.8",
+    "pyyaml>=6.0.2",
+    "redis>=6.2.0",
+    "requests>=2.32.3",
+    "ruff>=0.11.2",
+    "social-auth-app-django>=5.4.3",
+    "ua-parser>=1.0.1",
+    "user-agents>=2.2.0",
+]
+
+[tool.ruff]
+exclude = [
+    "nsjail",
+]

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" />
+{% endblock %}
+
+
+{% block content %}
+<canvas width="0" height="0" id="animation" class="animation-area"></canvas>
+    <script type="text/javascript" src="{% static 'js/animate.js' %}"></script>
+    <br /><br /><br />
+    <section class="main">
+      <div class="bgbox">
+        <div id="title" class="title">
+          <strong><em>TJCT Grader</em></strong>
+        </div>
+        <br />
+        <div class="cnt_buttons">
+            {% if tjioi %}
+            <a class="button_link" id="login" href="{% url "tjioi:login" %}">
+            <div class="button">TJIOI Login</div>
+          </a>
+          {% else %}
+<a class="button_link" id="login" href="{% url 'social:begin' 'ion' %}">
+            <div class="button">Enter</div>
+          </a>
+            {% endif %}
+          </a>
+        </div>
+        <br />
+      </div>
+
+      <div class="subbox">
+        <div class="subtext">
+          Welcome to the automatic grader for TJ Computer Team. Please note that
+          this website is hosted external to Director. Please email
+          tjctgrader@gmail.com and message the officers if you have any
+          questions.
+        </div>
+      </div>
+    </section>
+{% endblock %}
+

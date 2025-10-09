@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+{% endblock stylesheet %}
+
+{% block title %}Submissions{% endblock title %}
+
+
+{% block content %}
+{% if user.particles_enabled %}{% include "partials/particles.html" %}{% endif %}
+{% include "partials/header.html" %}
+{% include "partials/contestNavbar.html" %}
+
+<div class='main-block' id="submissions">
+<table>
+    <tr>
+        <th>Submission</th>
+        <th>User</th>
+        <th>Problem</th>
+        <th>Langauge</th>
+        <th>Runtime</th>
+        <th>Verdict</th>
+        {% if user.is_staff %}<th>Skip</th>{% endif %}
+    </tr>
+    {% for sub in submissions  %}
+    <tr>
+        <td>
+            <a href="{% url "runtests:submission" sub.id %}">
+                #{{sub.id}}
+            </a>
+        </td>
+        <td>
+            <a href="{% url "index:user_profile" sub.usr.id %}">
+               {{sub.usr.display_name}}
+            </a>
+        </td>
+        <td>
+            <a href="{% url "problems:problem" sub.problem.id %}">
+                {{sub.problem.name}}
+            </a>
+        </td>
+        <td>
+            {{sub.language}}
+        </td>
+        <td>
+            {{sub.runtime}}ms
+        </td>
+        <td>
+            {{sub.verdict}}
+        </td>
+        {% if user.is_staff %}
+        <td>
+            {% if sub.verdict == 'Skipped' %}
+            Already Skipped
+            {% else %}
+                <a href="{% url 'contests:skip' sid=sub.id cid=cid mine_only=mine_only page=page|default:1 %}"
+                onclick="return confirm('Are you sure you want to skip this submission?');">Skip</a>
+            {% endif %}
+        </td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+</table>
+    <div class="option-buttons">
+    {% if page_obj.has_previous %}
+    <a href="{% url "contests:status" cid=cid mine_only=mine_only page=page_obj.previous_page_number %}">
+        <div class="button">Previous</div>
+    </a>
+    {% endif %}
+    <div class="button">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</div>
+    {% if page_obj.has_next %}
+    <a href="{% url "contests:status" cid=cid mine_only=mine_only page=page_obj.next_page_number %}">
+         <div class="button">Next</div>
+    </a>
+    {% endif %}
+</div>
+</div>
+
+{% endblock content %}

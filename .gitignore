@@ -1,0 +1,10 @@
+.vscode
+__pycache__
+.venv
+.ruff_cache
+.env
+.first_log
+collected_static
+media
+./filler_data.py
+./filler_data.pydb.sqlite3

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+{% endblock stylesheet %}
+
+{% block title %}{{problem.name}}{% endblock title %}
+
+{% block head %}
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+{% endblock head %}
+
+{% block content %}
+{% if user.particles_enabled %}{% include "partials/particles.html" %}{% endif %}
+{% include "partials/header.html" %}
+
+
+ <div class="main-block">
+    <div class="title"><strong>{{problem.contest_letter}}: {{problem.name}}</strong></div>
+    <div class="subtitle">
+        <br>
+        C++ Time Limit: {{tl_cpp}} seconds
+        <br>
+        Java Time Limit: {{tl_java}} seconds
+        <br>
+        Python Time Limit: {{tl_python}} seconds
+        <br>
+        Memory Limit: {{ problem.ml }} megabytes
+    </div>
+</div>
+<div class="main-block">
+    <div class="info">
+        {{ statement|safe }}
+    </div>
+</div>
+<div class="main-block">
+    <div class="info"><strong>Input Format</strong><br>
+        {{ inputtxt|safe }}
+    </div>
+</div>
+<div class="main-block">
+    <div class="info"><strong>Output Format</strong><br>
+        {{ outputtxt|safe }}
+    </div>
+</div>
+<div class="main-block">
+    <div class="info"><strong>Samples</strong><br>
+        {{ samples|safe }}
+    </div>
+</div>
+<div class="option-buttons">
+    <a href="{% url "runtests:submitproblem" pid=problem.id %}">
+        <div class="button">Submit</div>
+    </a>
+    <a href="{% url "contests:contest" cid=problem.contest.id %}">
+        <div class="button">Back</div>
+    </a>
+</div>
+
+{% endblock content %}

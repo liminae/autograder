@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile.css' %}" />
+{% endblock stylesheet %}
+
+{% block title %}Problemset{% endblock title %}
+
+{% block content %}
+{% if user.particles_enabled %}{% include "partials/particles.html" %}{% endif %}
+{% include "partials/header.html" %}
+
+<div class="main-block">
+    <div class="title">Problemset</div>
+</div>
+<div class="main-block" id="problems">
+    <ul class="sl">
+        {% for problem in problems  %}
+            <li class="sl">
+                <a href="{% url "problems:problem" pid=problem.id %}">
+                    <div class="problem-text">{{problem.id}} - {{ problem.name }}</div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock content %}
